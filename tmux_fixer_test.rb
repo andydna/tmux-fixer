@@ -13,11 +13,11 @@ class TmuxFixerTest < Minitest::Test
     assert true
   end
 
-  def test_tmux_fixer_finds_last_symlink
-    last_symlink = TmuxFixer.last_symlink
+  def test_tmux_fixer_finds_the_symlink
+    the_symlink = TmuxFixer.the_symlink
 
-    assert File.symlink? last_symlink 
-    assert_match /tmux_resurrect/, File.readlink(last_symlink)
+    assert File.symlink? the_symlink 
+    assert_match /tmux_resurrect/, File.readlink(the_symlink)
   end
 
   def test_last_resurrect
@@ -25,12 +25,12 @@ class TmuxFixerTest < Minitest::Test
   end
 
   def test_find_last_good_resurrect
-    last_good = TmuxFixer.last_good
+    last_good_resurrect = TmuxFixer.last_good_resurrect
 
-    refute File.size(last_good).zero?
+    refute File.size(last_good_resurrect).zero?
   end
 
-  def test_repoint_last_symlink
+  def test_repoint_the_symlink
     FileUtils.chdir($HERE)
     `rm sandbox/*`
 
@@ -43,13 +43,15 @@ class TmuxFixerTest < Minitest::Test
     FileUtils.touch(test_good)
     FileUtils.symlink(test_bad, test_link)
 
-    TmuxFixer.stub(:last_good, test_good) do
-      TmuxFixer.stub(:last_symlink, test_link) do
-        TmuxFixer.repoint_last_symlink_to_last_good
+    TmuxFixer.stub(:last_good_resurrect, test_good) do
+      TmuxFixer.stub(:the_symlink, test_link) do
+        TmuxFixer.repoint_the_symlink_to_last_good_resurrect
       end
     end
 
     assert_equal test_good, File.readlink(test_link)
+
+    `rm sandbox/*`
   end
 
   def test_delete_the_bad_resurrects
@@ -90,9 +92,9 @@ class ResurrectsTest < Minitest::Test
     assert_match /tmux_resurrect/, Resurrects.the_zero
   end
 
-  def test_newest_first
-    newest_first = Resurrects.newest_first
+  def test_newest
+    newest = Resurrects.newest
 
-    assert File.mtime(newest_first.first) > File.mtime(newest_first.last)
+    assert File.mtime(newest.first) > File.mtime(newest.last)
   end
 end
