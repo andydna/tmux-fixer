@@ -1,3 +1,5 @@
+require 'fileutils'
+
 TmuxFixer = Object.new
 class << TmuxFixer
   def repoint_the_symlink_to_last_good_resurrect
@@ -47,4 +49,9 @@ class << Resurrects
   def zeroes
     today.select { |r| File.size(r).zero? }
   end
+end
+
+if __FILE__ == $0
+  FileUtils.chdir("#{ENV['HOME']}/.tmux/resurrect")
+  TmuxFixer.repoint_the_symlink_to_last_good_resurrect
 end
