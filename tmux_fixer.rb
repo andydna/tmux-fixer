@@ -52,6 +52,16 @@ class << Resurrects
 end
 
 if __FILE__ == $0
+  fail "not quite perfect yet"
   FileUtils.chdir("#{ENV['HOME']}/.tmux/resurrect")
   TmuxFixer.repoint_the_symlink_to_last_good_resurrect
 end
+
+__END__
+todo
+tdd chdir
+be able to test entirely in sandbox
+be sure you're going to the correct last resurrect
+does tmux have any logs?
+
+
